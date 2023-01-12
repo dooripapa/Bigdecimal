@@ -3,6 +3,7 @@
 //
 #include "Bigdecimal.h"
 
+
 Bigdecimal::Bigdecimal(const std::string &value) {
     init(value);
 }
@@ -365,7 +366,7 @@ auto Bigdecimal::operator>(const Bigdecimal &rhs) const -> bool {
             if (gt(v.first, v.second))
                 result = false;
             else
-                result =  true;
+                result = true;
             break;
         case SIGN::ONLY_FRIST_MINUS:
             result = false;
@@ -761,7 +762,7 @@ auto Bigdecimal::operator/(const Bigdecimal &rhs) -> Bigdecimal {
     bool OnComma = false;
 
     int zeroCharCount = 0;
-    for (int i = 1;;++i) {
+    for (int i = 1;; ++i) {
         if (gt(vPair.first, vPair.second)) {
             zeroCharCount = 0;
             vRet = findTheRest(vPair.first, vPair.second);
@@ -772,7 +773,7 @@ auto Bigdecimal::operator/(const Bigdecimal &rhs) -> Bigdecimal {
 
             vPair.first = get<1>(vRet);
 
-        } else if ( eq(vPair.first, vPair.second) ) {
+        } else if (eq(vPair.first, vPair.second)) {
             quotient += "1"; //같으면 몫은 1
             break;
         } else {
@@ -786,7 +787,7 @@ auto Bigdecimal::operator/(const Bigdecimal &rhs) -> Bigdecimal {
 
             if (OnComma) {
                 nDecimalPointCount++;
-                if( nDecimalPointCount > MAX_DECIMAL_POINT )
+                if (nDecimalPointCount > MAX_DECIMAL_POINT)
                     break;
             }
 
@@ -805,7 +806,7 @@ auto Bigdecimal::operator/(const Bigdecimal &rhs) -> Bigdecimal {
             break;
         case SIGN::ONLY_FRIST_MINUS:
         case SIGN::ONLY_SECOND_MINUS:
-            result = "-"+quotient;
+            result = "-" + quotient;
             break;
     }
     return Bigdecimal{result};
@@ -824,56 +825,36 @@ auto Bigdecimal::findTheRest(std::string v1, std::string v2) noexcept -> std::tu
 
     string minusV;
 
-    string subV1, r2;
-    string quotient;
+    string subV1 = "";
+    string r2 = "";
+    string quotient = "";
     string remainder{"0"};
 
     size_t startP, limitLen;
     auto const copyPossibleLen = lenV2;
 
-    for (;;) {
-        startP = 0;
-        limitLen = v1.length();
-        subV1 = v1.substr(startP, copyPossibleLen);
+    int i = 0;
+    for (i = 0; i < v1.length(); ++i) {
+        subV1.append(1, v1[i]);
+
         if (ge(subV1, v2)) {
-            auto ret = findMaxLimit(subV1, v2);
-            quotient.append(to_string(get<0>(ret)));
+            auto r = findMaxLimit(subV1, v2);
+            quotient.append(to_string(get<0>(r)));
 
-            minusV = minus(subV1, get<1>(ret));
+            minusV = minus(subV1, get<1>(r));
             minusV = removePrefixZero(minusV);
-            if (minusV.length() == 0)
+            remainder = minusV;
+            //나머지기 0이면
+            if (remainder == "") {
                 remainder = "0";
-            else
-                remainder = minusV;
-
-            startP = copyPossibleLen;
-            if (startP < limitLen) {
-                v1 = minusV.append(v1.substr(startP, limitLen - startP));
-            } else
-                break;
-        } else if ((copyPossibleLen + 1) <= limitLen) {
-            subV1 = v1.substr(startP, copyPossibleLen + 1);
-
-            auto ret = findMaxLimit(subV1, v2);
-            quotient.append(to_string(get<0>(ret)));
-
-            minusV = minus(subV1, get<1>(ret));
-            minusV = removePrefixZero(minusV);
-            if (minusV.length() == 0)
-                remainder = "0";
-            else
-                remainder = minusV;
-
-            startP = (copyPossibleLen + 1);
-            if (startP < limitLen) {
-                v1 = minusV.append(v1.substr(startP, limitLen - startP));
-            } else
-                break;
+            }
+            subV1 = minusV;
         } else {
-            quotient.append(subV1);
-            break;
+            quotient.append(1, '0');
         }
     }
+
+    quotient = removePrefixZero(quotient);
 
     return {quotient, remainder};
 }
