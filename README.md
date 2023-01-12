@@ -1,13 +1,12 @@
 # Bigdecimal
 
-For C++, API to overcome epsilon problem in bigdecimal computation
+### For C++, API to overcome epsilon problem in big decimal computation
 
-이 API는, 최대 int사이즈 길이의 숫자문자열을 사칙연산합니다.
+> 이 API는, 최대 int사이즈 길이의 숫자 형식의 문자열을 사칙연산합니다.
 float(double) 타입의 사칙연산(음수,양수)에서 발생되는 엡실론 문제를 극복하기 위해서, 만들어진 API(클래스)입니다.
+많은 수의 단위테스트가 필요했고, 이를 위해서 구글 gtest를 사용했고, 해당 라이브러리가 필요합니다.
 
-많은 수의 단위테스트를 위해서 구글 gtest를 사용했고, 해당 라이브러리가 필요합니다.
-
-몇가지 주의할 사항 및 고려할 사항이 있습니다.
+#### 몇가지 주의할 사항 및 고려할 사항이 있습니다.
 1. Bigdecimal 설계상. 불변객체을 지향합니다. 즉, 생성자 호출시에 초기화를 하고, 이후, 객체내부 상태변경을 불가능하도록 설계하였습니다.
 2. 1을 지키기 위해, 생성자 호출시, input값을 받아서 처리하고, 기본생성자는 호출금지로 설계되었습니다.
 3. 1을 지키기 위해, 불가피하게 생성자호출시 init() 이라는 함수를 호출하는데, 이 함수는 간단하지 않습니다.
@@ -17,14 +16,12 @@ float(double) 타입의 사칙연산(음수,양수)에서 발생되는 엡실론
 5. 최대 복잡도는 O2입니다. 그래서 성능상 문제가 있습니다.
    그러나, 대부분 케이스에서 엄청난 큰수를 계산하지 않을 거라고 판단됩니다.
 
-단위테스트 아래의 방식으로 수행가능합니다.
-1. 구글 gtest 설치.
-   sudo apt install libgtest-dev
+#### 단위테스트 아래의 방식으로 수행가능합니다.
+1. 구글 gtest 설치. 
+   `$> sudo apt install libgtest-dev`
 2. cmake로 make파일 생성
-   cmake CMakeList.txt
+   `$> cmake CMakeList.txt`
 3. make 실행
-   make
-4. main 바이너리 샐행
-   ./main
-   
-MIT 라이센스입니다.
+   `$> make`
+4. main 바이너리 실행(단위테스트 실행)
+   `$> ./main`
