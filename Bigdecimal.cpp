@@ -445,11 +445,31 @@ auto Bigdecimal::getDecimalMetaInfo(const std::string &value, uint &uAboveZeroLe
 
 auto Bigdecimal::init(const std::string &value) -> void {
     int startPos = 0;
-    for (int i = 0; i < value.size(); i++)
-        if (value[i] != 0x20) {
-            startPos = i;
-            break;
+    bool prefixNum = false;
+    bool suffixNum = false;
+
+    // 정합성 체크
+    for (int i = 0; i < value.size(); i++) {
+        if ( '0' <= value[i] && value[i] <= '9' || value[i] == '-' || value[i] == '+') {
+            if (!prefixNum) {
+                prefixNum = true;
+                startPos = i;
+            }
+        } else {
+            if (prefixNum && !suffixNum)
+                suffixNum = true;
+
+            if (value[i] == ' ') {
+                if (prefixNum && !suffixNum)
+                    throw runtime_error("bad number:" + value);
+            } else if (value[i] == '.') {
+                if (prefixNum && !suffixNum)
+                    throw runtime_error("bad number:" + value);
+            } else {
+                throw runtime_error("bad number:" + value);
+            }
         }
+    }
 
     //앞 부분 기호(+, -) 판단
     if (value[startPos] == '-') {
@@ -473,7 +493,7 @@ auto Bigdecimal::init(const std::string &value) -> void {
     bool bZero = true;
     m_IsFloatType = false;
     int nZeroRepeatPos = 0;
-    for (int i = 0; i < sTmpValue.size(); ++i) {
+    for ( int i = 0; i < sTmpValue.size(); ++i) {
         if (sTmpValue[i] == '0' && !m_IsFloatType)
             nZeroRepeatPos++;
         if (sTmpValue[i] == '.') {
@@ -498,7 +518,6 @@ auto Bigdecimal::init(const std::string &value) -> void {
             m_String = sTmpValue;
         }
     }
-
 }
 
 /**
@@ -905,4 +924,32 @@ auto Bigdecimal::compairSign(bool minusFlag1, bool minusFlag2) noexcept -> SIGN 
         return SIGN::ONLY_SECOND_MINUS;
     else
         return SIGN::BOTH_PLUS;
+}
+
+auto Bigdecimal::operator*=(const Bigdecimal &rhs) -> Bigdecimal {
+    *this = *this * rhs;
+    return Bigdecimal{*this};
+}
+
+auto Bigdecimal::operator+=(const Bigdecimal &rhs) -> Bigdecimal {
+    *this = *this + rhs;
+    return Bigdecimal{*this};
+}
+
+auto Bigdecimal::operator<(const Bigdecimal &rhs) const -> bool {
+    return !(*this >= rhs);
+}
+
+auto Bigdecimal::operator<=(const Bigdecimal &rhs) const -> bool {
+    return !(*this > rhs);
+}
+
+auto Bigdecimal::operator-=(const Bigdecimal &rhs) -> Bigdecimal {
+    *this = *this - rhs;
+    return Bigdecimal{*this};
+}
+
+auto Bigdecimal::operator/=(const Bigdecimal &rhs) -> Bigdecimal {
+    *this = *this / rhs;
+    return Bigdecimal{*this};
 }

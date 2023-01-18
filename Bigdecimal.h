@@ -62,33 +62,46 @@ public:
 
     /**
      * * 연산자 오버라이딩
+     * *= 연산자 오버라이딩
      * @param rhs
      * @return
      */
     auto operator*(const Bigdecimal &rhs) -> Bigdecimal;
 
+    auto operator*=(const Bigdecimal &rhs) -> Bigdecimal;
+
     /**
      * + 연산 오버라이딩
+     * += 연산 오버라이딩
      * @param rhs
      * @return
      */
     auto operator+(const Bigdecimal &rhs) -> Bigdecimal;
 
+    auto operator+=(const Bigdecimal &rhs) -> Bigdecimal;
+
     /**
      * >, >= 비교연산자 오버라이딩
+     * <, <= 비교연산자 오버라이딩
      * @param rhs
      * @return
      */
     auto operator>(const Bigdecimal &rhs) const -> bool;
 
+    auto operator<(const Bigdecimal &rhs) const -> bool;
+
     auto operator>=(const Bigdecimal &rhs) const -> bool;
 
+    auto operator<=(const Bigdecimal &rhs) const -> bool;
     /**
      * - 오버라이딩
+     * -= 오버라이딩
      * @param rhs
      * @return
      */
     auto operator-(const Bigdecimal &rhs) -> Bigdecimal;
+
+    auto operator-=(const Bigdecimal &rhs) -> Bigdecimal;
 
     auto operator-(std::string &&rhs) -> Bigdecimal;
 
@@ -118,6 +131,8 @@ public:
      *  @return
      */
     auto operator/(const Bigdecimal &rhs) -> Bigdecimal;
+
+    auto operator/=(const Bigdecimal &rhs) -> Bigdecimal;
 
     /**
      * 값을 문자열로 리턴 합니다.

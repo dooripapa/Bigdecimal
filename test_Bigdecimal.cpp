@@ -9,6 +9,8 @@
 using namespace std;
 
 TEST(Bigdecimal, ConstructTest) {
+    EXPECT_ANY_THROW(Bigdecimal{"324kkaksdf"});
+
     Bigdecimal v1{"5"};
     EXPECT_EQ("5", v1.toString());
 
@@ -1118,4 +1120,50 @@ TEST(Bigdecimal, design_complex) {
         r7 = r7 / Bigdecimal{"-0.234"};
         std::cout << "r7:"<<r7.toString() << std::endl;
     }
+}
+TEST(Bigdecimal, design_calc) {
+
+    auto r = Bigdecimal{"1"};
+    for(int i=0;i<10;i++) {
+        r = r * Bigdecimal{"7"};
+        std::cout << "r:"<<r.toString() << std::endl;
+    }
+
+    auto r1 = Bigdecimal{"1"};
+    for(int i=0;i<10;i++) {
+        r1 *= Bigdecimal{"7"};
+        std::cout << "r1:"<<r1.toString() << std::endl;
+    }
+
+    auto r2 = r1;
+    for(int i=0;i<10;i++) {
+        r2 = r2 / Bigdecimal{"7"};
+        std::cout << "r2:"<<r2.toString() << std::endl;
+    }
+
+    auto r3 = r1;
+    for(int i=0;i<10;i++) {
+        r3 /=Bigdecimal{"7"};
+        std::cout << "r3:"<<r3.toString() << std::endl;
+    }
+}
+TEST(Bigdecimal, design_true_false) {
+
+    if( Bigdecimal{"1237.001929345"} > Bigdecimal{"0.1"} )
+        std::cout << "true"<< std::endl;
+
+    if( Bigdecimal{"1237.001929345"} < Bigdecimal{"0.1"} )
+        std::cout << "not happening"<< std::endl;
+    else
+        std::cout << "false"<< std::endl;
+
+    if( Bigdecimal{"1237.001929345"} <= Bigdecimal{"1237.001929344"} )
+        std::cout << "not happening"<< std::endl;
+    else
+        std::cout << "false"<< std::endl;
+
+    if( Bigdecimal{"1237.001929345"} >= Bigdecimal{"1237.001929344"} )
+        std::cout << "true"<< std::endl;
+    else
+        std::cout << "bad exception"<< std::endl;
 }
