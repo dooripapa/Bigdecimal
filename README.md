@@ -2,7 +2,7 @@
 
 ### For C++, API to overcome epsilon problem in big decimal computation
 
-> 이 API는, 최대 int사이즈 길이(한계가 거의 없는)의 숫자 형식의 문자열을 사칙연산합니다.
+> 이 API는, 정수부, 소수부의 수의 길이가 최대 INT_MAX인 문자열을 사칙연산 할 수 있습니다.
 float(double) 타입의 사칙연산(음수,양수)에서 발생되는 엡실론 문제를 극복하기 위해서, 만들어진 API(클래스)입니다.
 많은 수의 단위테스트가 필요했고, 이를 위해서 구글 gtest를 사용했고, 해당 라이브러리가 필요합니다.
 

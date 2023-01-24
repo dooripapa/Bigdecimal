@@ -91,8 +91,8 @@ auto Bigdecimal::operator+(const Bigdecimal &rhs) -> Bigdecimal {
     auto v = correctAsIntegerString(this->m_String, rhs.m_String);
     auto belowZeroLen = belowZeroLen1 > belowZeroLen2 ? belowZeroLen1 : belowZeroLen2;
 
-    Bigdecimal tLeft{""};
-    Bigdecimal tRight{""};
+    Bigdecimal tLeft{"0"};
+    Bigdecimal tRight{"0"};
     string r;
     switch (compairSign(this->m_IsNegative, rhs.m_IsNegative)) {
         case SIGN::BOTH_MINUS:
@@ -115,6 +115,8 @@ auto Bigdecimal::operator+(const Bigdecimal &rhs) -> Bigdecimal {
             r = makeUpPoint(plus(v.first, v.second), belowZeroLen);
             break;
     }
+    if(r.empty())
+        r = "0";
     return Bigdecimal{r};
 }
 
@@ -319,8 +321,8 @@ auto Bigdecimal::operator-(const Bigdecimal &rhs) -> Bigdecimal {
     auto belowZeroLen = belowZeroLen1 > belowZeroLen2 ? belowZeroLen1 : belowZeroLen2;
     //둘다 마이너스
 
-    Bigdecimal tLeft{""};
-    Bigdecimal tRight{""};
+    Bigdecimal tLeft{"0"};
+    Bigdecimal tRight{"0"};
     string result, r;
     switch (compairSign(this->m_IsNegative, rhs.m_IsNegative)) {
         case SIGN::BOTH_MINUS:
@@ -350,6 +352,8 @@ auto Bigdecimal::operator-(const Bigdecimal &rhs) -> Bigdecimal {
             }
             break;
     }
+    if(result.empty())
+        result = "0";
     return Bigdecimal{result};
 }
 
@@ -444,30 +448,71 @@ auto Bigdecimal::getDecimalMetaInfo(const std::string &value, uint &uAboveZeroLe
 }
 
 auto Bigdecimal::init(const std::string &value) -> void {
-    int startPos = 0;
-    bool prefixNum = false;
-    bool suffixNum = false;
+    int startPos = -1;
+    int prefixNumPos = -1;
+    int minusSignPos = -1;
+    int plusSignPos = -1;
+    int spaceSignPos = -1;
+    int pointSignPos = -1;
+    bool minusSignOnce = false;
+    bool plusSignOnce = false;
+    bool pointSignOnce = false;
 
     // 정합성 체크
     for (int i = 0; i < value.size(); i++) {
-        if ( '0' <= value[i] && value[i] <= '9' || value[i] == '-' || value[i] == '+') {
-            if (!prefixNum) {
-                prefixNum = true;
+        if ( '0' <= value[i] && value[i] <= '9') {
+            if(startPos==-1)
                 startPos = i;
-            }
-        } else {
-            if (prefixNum && !suffixNum)
-                suffixNum = true;
-
-            if (value[i] == ' ') {
-                if (prefixNum && !suffixNum)
-                    throw runtime_error("bad number:" + value);
-            } else if (value[i] == '.') {
-                if (prefixNum && !suffixNum)
-                    throw runtime_error("bad number:" + value);
-            } else {
+            prefixNumPos = i;
+            if(minusSignOnce && prefixNumPos < minusSignPos && prefixNumPos != -1 && minusSignPos !=-1)
                 throw runtime_error("bad number:" + value);
-            }
+            if(plusSignOnce && prefixNumPos < plusSignPos && prefixNumPos != -1 && plusSignPos !=-1)
+                throw runtime_error("bad number:" + value);
+        }
+        else if(value[i] == '-') {
+            if(startPos==-1)
+                startPos = i;
+            minusSignPos = i;
+            if (!minusSignOnce)
+                minusSignOnce = true;
+            else
+                throw runtime_error("bad number:" + value);
+            if( minusSignPos > prefixNumPos && minusSignPos != -1 && prefixNumPos != -1)
+                throw runtime_error("bad number:" + value);
+        }
+        else if(value[i] == '+') {
+            if(startPos==-1)
+                startPos = i;
+            plusSignPos = i;
+            if (!plusSignOnce)
+                plusSignOnce = true;
+            else
+                throw runtime_error("bad number:" + value);
+            if( plusSignPos > prefixNumPos && plusSignPos != -1 && prefixNumPos != -1)
+                throw runtime_error("bad number:" + value);
+        }
+        else if(value[i] == ' ') {
+            spaceSignPos = i;
+            if( spaceSignPos > minusSignPos && spaceSignPos != -1 && minusSignPos != -1)
+                throw runtime_error("bad number:" + value);
+            if( spaceSignPos > plusSignPos && spaceSignPos != -1 && plusSignPos != -1)
+                throw runtime_error("bad number:" + value);
+            if( spaceSignPos > prefixNumPos && spaceSignPos != -1 && prefixNumPos != -1 )
+                throw runtime_error("bad number:" + value);
+        }
+        else if(value[i] == '.') {
+            pointSignPos = i;
+            if(!pointSignOnce)
+                pointSignOnce = true;
+            else
+                throw runtime_error("bad number:" + value);
+            if( pointSignPos < minusSignPos && pointSignPos != -1 && minusSignPos != -1)
+                throw runtime_error("bad number:" + value);
+            if( pointSignPos < plusSignPos && pointSignPos != -1 && plusSignPos != -1)
+                throw runtime_error("bad number:" + value);
+        }
+        else{
+            throw runtime_error("bad number:" + value);
         }
     }
 
@@ -828,6 +873,8 @@ auto Bigdecimal::operator/(const Bigdecimal &rhs) -> Bigdecimal {
             result = "-" + quotient;
             break;
     }
+    if(result.empty())
+        result = "0";
     return Bigdecimal{result};
 }
 
@@ -844,9 +891,9 @@ auto Bigdecimal::findTheRest(std::string v1, std::string v2) noexcept -> std::tu
 
     string minusV;
 
-    string subV1 = "";
-    string r2 = "";
-    string quotient = "";
+    string subV1;
+    string r2;
+    string quotient;
     string remainder{"0"};
 
     size_t startP, limitLen;
@@ -864,7 +911,7 @@ auto Bigdecimal::findTheRest(std::string v1, std::string v2) noexcept -> std::tu
             minusV = removePrefixZero(minusV);
             remainder = minusV;
             //나머지기 0이면
-            if (remainder == "") {
+            if (remainder.empty()) {
                 remainder = "0";
             }
             subV1 = minusV;

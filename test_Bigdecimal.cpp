@@ -1120,6 +1120,12 @@ TEST(Bigdecimal, design_complex) {
         r7 = r7 / Bigdecimal{"-0.234"};
         std::cout << "r7:"<<r7.toString() << std::endl;
     }
+
+    Bigdecimal r8{"1"};
+    for(int i=1; i<=100;i++) {
+        r8 = r8*Bigdecimal{"2"};
+        std::cout << "index:"<< i <<" r7:"<< r8.toString() << std::endl;
+    }
 }
 TEST(Bigdecimal, design_calc) {
 
