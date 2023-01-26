@@ -135,6 +135,14 @@ public:
     auto operator/=(const Bigdecimal &rhs) -> Bigdecimal;
 
     /**
+     * std::cout << Bigdecimal;
+     * @param out
+     * @param rhs
+     * @return
+     */
+    friend auto operator<<(ostream& out, const Bigdecimal& rhs) -> ostream& ;
+
+    /**
      * 값을 문자열로 리턴 합니다.
      * @return std::string
      */
@@ -188,6 +196,7 @@ private:
     [[nodiscard]] static auto findMaxLimit(const string &v1, const string &v2) noexcept -> tuple<int, string>;
 
     static auto compairSign(bool minusFlag1, bool minusFlag2) noexcept -> SIGN;
+
 
 private:
     std::string m_String;

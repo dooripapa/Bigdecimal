@@ -1173,3 +1173,10 @@ TEST(Bigdecimal, design_true_false) {
     else
         std::cout << "bad exception"<< std::endl;
 }
+
+TEST(Bigdecimal, stdout){
+    cout << Bigdecimal{"-0.112"}<<endl;
+    cout << Bigdecimal{"+10.11111"}<<endl;
+    cout << Bigdecimal{"293949493993934934992394293495962394293.293949493993934934992394293495962394293"}<<endl;
+    cout << Bigdecimal{"-293949493993934934992394293495962394293.293949493993934934992394293495962394293"} + Bigdecimal{"1"}<<endl;
+}

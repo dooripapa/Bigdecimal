@@ -1000,3 +1000,9 @@ auto Bigdecimal::operator/=(const Bigdecimal &rhs) -> Bigdecimal {
     *this = *this / rhs;
     return Bigdecimal{*this};
 }
+
+auto operator<<(std::ostream &out, const Bigdecimal& rhs) -> std::ostream & {
+    string r = Bigdecimal::removeSuffixZero(rhs.m_IsNegative ? ("-" + rhs.m_String) : rhs.m_String);
+    out << r;
+    return out;
+}
