@@ -10,6 +10,12 @@ using namespace std;
 
 TEST(Bigdecimal, ConstructTest) {
     EXPECT_ANY_THROW(Bigdecimal{"324kkaksdf"});
+    EXPECT_ANY_THROW(Bigdecimal{"-199-10"});
+    EXPECT_ANY_THROW(Bigdecimal{"+199+10"});
+    EXPECT_ANY_THROW(Bigdecimal{"+199--+10"});
+    EXPECT_ANY_THROW(Bigdecimal{"0.0.10..."});
+    EXPECT_ANY_THROW(Bigdecimal{"0.0.10...1"});
+    EXPECT_ANY_THROW(Bigdecimal{"0.0.10...-+10"});
 
     Bigdecimal v1{"5"};
     EXPECT_EQ("5", v1.toString());
@@ -1175,6 +1181,8 @@ TEST(Bigdecimal, design_true_false) {
 }
 
 TEST(Bigdecimal, stdout){
+    Bigdecimal a{"0010"};
+    cout << a << endl;
     cout << Bigdecimal{"-0.112"}<<endl;
     cout << Bigdecimal{"+10.11111"}<<endl;
     cout << Bigdecimal{"293949493993934934992394293495962394293.293949493993934934992394293495962394293"}<<endl;

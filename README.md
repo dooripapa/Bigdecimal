@@ -19,6 +19,7 @@ float(double) 타입의 사칙연산(음수,양수)에서 발생되는 엡실론
    사칙연산시, 최대 표현 가능한 소수부는 10자리(Limit)의미합니다. 한계치를 정하세요. 
    무한루프에 빠질 수 있습니다. 이 부분도 성향에 맞게 수정하십시요.
 7. 버그가 있을 경우, issue를 올려주세요. 최대한 빠른 시일안에 수정하겠습니다.
+8. test_Bigdecimal.cpp 파일을 참고하세요. 많은 테스트 케이스를 확인할 수 있습니다.
 
 #### 단위테스트 아래의 방식으로 수행가능합니다.
 1. 구글 gtest 설치(Debian 계열).
@@ -49,6 +50,31 @@ make
 7. /, /=
 
 #### 사용법
+1. 초기화 
+```c++
+Bigdecimal a{"-0.00000000"};
+std::cout<< a << std::endl; //출력 0
+
+Bigdecimal b{"      0.00000000"};
+std::cout<< b << std::endl; //출력 0
+
+Bigdecimal c{"      +0.00000000000000000000000000000000000000"};
+std::cout<< c << std::endl; //출력 0
+
+Bigdecimal d{"      -0.0"};
+std::cout<< d << std::endl; //출력 0
+
+Bigdecimal e{"034"};
+std::cout<< d << std::endl; //출력 34
+
+Bigdecimal f{"100.0000"};
+std::cout<< f << std::endl; //출력 100
+
+Bigdecimal g{"1          "};  //뒤에 공백이 있을 경우 허용안됨. runtime_error exception 발생
+Bigdecimal i{"kejake123545"}; //숫자가 아닌 문자값은 허용안됨. runtime_error exception 발생
+Bigdecimal j{"-0.01.01"};     //Float(double) 포멧형식이 아님. runtime_error exception 발생
+Bigdecimal k{"-100-10"};      //정수부 포멧형식이 아님. runtime_error exception 발생
+```
 1. 비교연산자
 ```c++
 if( Bigdecimal{"0"} > Bigdecimal{"-99999999999999999999999999999999999999999999999999999999999999999999"} )
@@ -96,27 +122,4 @@ Bigdecimal a{"8324560980431615848446804538.000241607397553188962"};
 Bigdecimal b{"0.912389348394894584958"};
 Bigdecimal c = a / b;  
 std::cout << c << std::endl;  //출력 9123912938129382934829348239
-```
-6. 기타
-```c++
-Bigdecimal a{"-0.00000000"};
-std::cout<< a.to_String() << std::endl; //출력 0
-
-Bigdecimal b{"      0.00000000"};
-std::cout<< b.to_String() << std::endl; //출력 0
-
-Bigdecimal c{"      +0.00000000000000000000000000000000000000"};
-std::cout<< c.to_String() << std::endl; //출력 0
-
-Bigdecimal d{"      -0.0"};
-std::cout<< d.to_String() << std::endl; //출력 0
-
-Bigdecimal e{"034"};
-std::cout<< d.to_String() << std::endl; //출력 34
-
-Bigdecimal f{"100.0000"};
-std::cout<< f.to_String() << std::endl; //출력 100
-
-Bigdecimal g{"1          "}; //뒤에 공백이 있을 경우 허용안됨. runtime_error exception 발생
-Bigdecimal h{"kejake123545"}; //숫자가 아닌 문자값은 허용안됨. runtime_error exception 발생
 ```
